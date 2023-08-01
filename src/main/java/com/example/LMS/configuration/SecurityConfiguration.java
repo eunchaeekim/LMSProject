@@ -49,8 +49,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         , "/member/email-auth"
                         ,"/member/find/password"
                         , "/member/reset/password"
+                        , "/admin/main"
                 )
                 .permitAll();
+
+        // 요청에 대한 보안 설정
+        http.authorizeRequests()
+                        .antMatchers("/admin/**")
+                        // 선택한 URL에 대해 "ROLE_ADMIN" 권한을 가진 사용자만 접근할 수 있도록 설정
+                        .hasAnyAuthority("ROLE_ADMIN");
+
         // 폼 기반 로그인 설정을 구성
         http.formLogin()
                 // 로그인 페이지의 경로 설정
@@ -70,6 +78,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // 이 설정을 true로 지정하면, 사용자의 세션 정보가 삭제되어 로그아웃이 완전히 이루어짐
                 // 사용자의 세션 정보가 삭제되므로, 로그아웃 후에는 해당 사용자가 세션을 이용한 요청을 할 수 없음
                 .invalidateHttpSession(true);
+
+        // 객체에 대한 예외 처리 관련 설정
+        http.exceptionHandling()
+                // 접근이 거부된 경우(권한이 없는 경우) "/error/denied" 경로로 리다이렉트하도록 설정
+                .accessDeniedPage("/error/denied");
 
         super.configure(http);
     }

@@ -105,6 +105,10 @@ public class MemberServiceImpl implements MemberService {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
+        if (member.isAdminYn()) {
+            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIn"));
+        }
+
         return new User(member.getUserId(), member.getPassword(), grantedAuthorities); // User 클래스는 UserDetails 인터페이스를 구현한 클래스
     }
 
