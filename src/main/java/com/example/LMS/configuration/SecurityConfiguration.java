@@ -49,15 +49,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         , "/member/email-auth"
                         ,"/member/find/password"
                         , "/member/reset/password"
-                        , "/admin/main"
                 )
                 .permitAll();
 
         // 요청에 대한 보안 설정
+        /*
         http.authorizeRequests()
                         .antMatchers("/admin/**")
                         // 선택한 URL에 대해 "ROLE_ADMIN" 권한을 가진 사용자만 접근할 수 있도록 설정
                         .hasAnyAuthority("ROLE_ADMIN");
+
+         */
 
         // 폼 기반 로그인 설정을 구성
         http.formLogin()

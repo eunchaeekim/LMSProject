@@ -1,9 +1,14 @@
 package com.example.LMS.member.service;
 
 
+import com.example.LMS.admin.dto.MemberDto;
+import com.example.LMS.admin.model.MemberParam;
+import com.example.LMS.member.entity.Member;
 import com.example.LMS.member.model.MemberInput;
 import com.example.LMS.member.model.ResetPasswordInput;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.List;
 
 public interface MemberService extends UserDetailsService {
 
@@ -28,4 +33,9 @@ public interface MemberService extends UserDetailsService {
      * 입력받은 uuid값이 유효한지 확인
      */
     boolean checkResetPassword(String uuid);
+
+    /**
+     * 회원 목록 리턴(관리자에서만 가능)
+     */
+    List<MemberDto> list(MemberParam parameter);
 }
