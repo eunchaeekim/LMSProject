@@ -1,6 +1,9 @@
 package com.example.LMS.member.service.impl;
 
 
+import com.example.LMS.admin.dto.MemberDto;
+import com.example.LMS.admin.mapper.MemberMapper;
+import com.example.LMS.admin.model.MemberParam;
 import com.example.LMS.component.MailComponents;
 import com.example.LMS.member.entity.Member;
 import com.example.LMS.member.exception.MemberNotEmailAuthException;
@@ -11,11 +14,13 @@ import com.example.LMS.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +33,25 @@ import java.util.UUID;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MailComponents mailComponents;
+    private final MemberMapper memberMapper;
+
+    @Override
+    public List<MemberDto> list(MemberParam parameter) {
+
+        long totalCount = memberMapper.selectListCount(parameter);
+
+        List<MemberDto> list = memberMapper.selectList(parameter);
+        if(!CollectionUtils.isEmpty(list)) {
+            int i = 0;
+            for (MemberDto x : list) {
+                x.setTotalCount(totalCount);
+                x.setSeq(totalCount - parameter.getPageStart()-i);
+                i++;
+            }
+        }
+
+        return list;
+    }
 
     /**
      * 회원 가입
@@ -106,7 +130,7 @@ public class MemberServiceImpl implements MemberService {
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
         if (member.isAdminYn()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIn"));
+            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
 
         return new User(member.getUserId(), member.getPassword(), grantedAuthorities); // User 클래스는 UserDetails 인터페이스를 구현한 클래스
