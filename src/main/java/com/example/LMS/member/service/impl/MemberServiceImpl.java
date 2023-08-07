@@ -7,6 +7,7 @@ import com.example.LMS.admin.model.MemberParam;
 import com.example.LMS.component.MailComponents;
 import com.example.LMS.member.entity.Member;
 import com.example.LMS.member.exception.MemberNotEmailAuthException;
+import com.example.LMS.member.exception.MemberStopUserException;
 import com.example.LMS.member.model.MemberInput;
 import com.example.LMS.member.model.ResetPasswordInput;
 import com.example.LMS.member.repository.MemberRepository;
@@ -34,6 +35,17 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MailComponents mailComponents;
     private final MemberMapper memberMapper;
+
+    @Override
+    public MemberDto detail(String userId) {
+        Optional<Member> optionalMember = memberRepository.findById(userId);
+        if(!optionalMember.isPresent()) {
+            return null;
+        }
+        Member member = optionalMember.get();
+
+        return MemberDto.of(member);
+    }
 
     @Override
     public List<MemberDto> list(MemberParam parameter) {
@@ -78,6 +90,7 @@ public class MemberServiceImpl implements MemberService {
                 .regDt(LocalDateTime.now())
                 .emailAuthYn(false)
                 .emailAuthKey(uuid)
+                .userStatus(Member.MEMBER_STATUS_REQ)
                 .build();
         System.out.println(member.toString());
         memberRepository.save(member);
@@ -106,6 +119,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         member.setEmailAuthYn(true);
+        member.setUserStatus(Member.MEMBER_STATUS_ING);
         member.setEmailAuthDt(LocalDateTime.now());
         memberRepository.save(member);
 
@@ -124,6 +138,10 @@ public class MemberServiceImpl implements MemberService {
 
         if(!member.isEmailAuthYn()){
             throw new MemberNotEmailAuthException("이메일 활성화 이후에 로그인을 해주세요.");
+        }
+
+        if (Member.MEMBER_STATUS_STOP.equals(member.getUserStatus())) {
+            throw new MemberStopUserException("정지된 회원입니다");
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
@@ -200,6 +218,39 @@ public class MemberServiceImpl implements MemberService {
         if (member.getResetPasswordLimitDt().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("유효한 날짜가 아닙니다.");
         }
+
+        return true;
+    }
+    @Override
+    public boolean updateStatus(String userId, String userStatus) {
+
+        Optional<Member> optionalMember = memberRepository.findById(userId);
+        if (!optionalMember.isPresent()) {
+            throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
+        }
+
+        Member member = optionalMember.get();
+
+        member.setUserStatus(userStatus);
+        memberRepository.save(member);
+
+        return true;
+    }
+
+    @Override
+    public boolean updatePassword(String userId, String password) {
+
+        Optional<Member> optionalMember = memberRepository.findById(userId);
+        if(!optionalMember.isPresent()) {
+            throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다");
+        }
+
+        Member member = optionalMember.get();
+
+        String encPassword = BCrypt.hashpw(password,BCrypt.gensalt());
+
+        member.setPassword(encPassword);
+        memberRepository.save(member);
 
         return true;
     }
