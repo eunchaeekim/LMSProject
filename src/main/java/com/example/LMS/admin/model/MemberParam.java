@@ -10,6 +10,8 @@ public class MemberParam {
     long pageIndex;
     long pageSize;
 
+    String userId;
+
     public long getPageStart() {
         init();
         return (pageIndex - 1) * pageSize;

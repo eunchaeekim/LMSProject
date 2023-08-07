@@ -2,12 +2,14 @@ package com.example.LMS.admin.controller;
 
 import com.example.LMS.admin.dto.MemberDto;
 import com.example.LMS.admin.model.MemberParam;
+import com.example.LMS.member.model.MemberInput;
 import com.example.LMS.util.PageUtil;
 import com.example.LMS.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -37,9 +39,24 @@ public class AdminMemberController {
         model.addAttribute("list", members);
         model.addAttribute("totalCount", totalCount);
 
-
-
         // 회원 목록을 출력하는 뷰 페이지로 이동
         return "admin/member/list";
+    }
+
+    @GetMapping("/admin/member/detail.do")
+    public String detail(Model model, MemberParam parameter) {
+        parameter.init();
+
+       MemberDto member = memberService.detail(parameter.getUserId());
+       model.addAttribute("member",member);
+
+        return "admin/member/detail";
+    }
+
+    @PostMapping("/admin/member/password.do")
+    public String password(Model model, MemberInput parameter) {
+        boolean result = memberService.updatePassword(parameter.getUserId(), parameter.getPassword());
+
+        return "redirect:/admin/member/detail.do?userId=" + parameter.getUserId();
     }
 }

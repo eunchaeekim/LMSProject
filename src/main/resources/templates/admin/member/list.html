@@ -36,18 +36,8 @@
 </head>
 <body>
 <h1>관리자 회원 관리</h1>
-<div>
-    <a href="/admin/main.do"> 관리자 메인 </a>
-    |
-    <a href="/admin/member/list.do"> 회원 관리 </a>
-    |
-    <a href="#"> 카테고리 관리 </a>
-    |
-    <a href="#"> 강의 관리 </a>
-    |
-    <a href="/member/logout"> 로그아웃 </a>
-    <br/>
-</div>
+<div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
+
 <div class="list">
     <div class="search-form">
         <p class="total-count">전체<span th:text="${totalCount}"></span>개</p>
@@ -78,7 +68,13 @@
         <tbody>
         <tr th:each="x : ${list}">
             <td th:text="${x.seq}">1</td>
-            <td th:text="${x.userId}">aaaa0000@naver.com</td>
+            <td>
+                <a th:text="${x.userId}"
+                   th:href="${'detail.do?userId=' + x.userId}">
+                    satcop@naver.com
+                </a>
+
+            </td>
             <td th:text="${x.userName}">홍길동</td>
             <td th:text="${x.phone}">010-1111-2222</td>
             <td>
@@ -86,7 +82,7 @@
                 <p th:if="${x.emailAuthYn eq false}">N</p>
             </td>
             <td>
-                <p th:text="${x.regDt}">2023.08.04</p>
+                <p th:text="${x.regDt}"></p>
             </td>
             <td>
                 <p th:if="${x.adminYn}">Y</p>

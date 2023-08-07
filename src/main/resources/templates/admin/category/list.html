@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 화면</title>
+</head>
+<body>
+<h1>관리자 회원 관리</h1>
+    <!--layout.html" 템플릿에서 fragment-admin-body-menu라는 조각을 가져와서 삽입-->
+    <div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
+    <div class="list">
+        <div>
+            <form method="post" aciton="/admin/category/add.do">
+                <input type="text" name="categoryName"/>
+                <button type="submit">추가</button>
+            </form>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th> ID </th>
+                <th> 카테고리명 </th>
+                <th> 순서 </th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
