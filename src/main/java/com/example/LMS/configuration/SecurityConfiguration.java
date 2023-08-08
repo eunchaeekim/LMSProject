@@ -41,6 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         이럴 때 CSRF 보호를 비활성화하여 외부 클라이언트에서 요청을 보낼 수 있도록 하는 것이 유용하다.
         */
         http.csrf().disable();
+        http.headers().frameOptions().sameOrigin();
         // 요청에 대한 권한 설정 (아래 경로에 대해서는 모든 사용자에게 접근 허용)
         http.authorizeRequests()
                 .antMatchers(

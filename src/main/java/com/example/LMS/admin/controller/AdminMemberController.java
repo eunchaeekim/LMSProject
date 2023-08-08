@@ -2,6 +2,7 @@ package com.example.LMS.admin.controller;
 
 import com.example.LMS.admin.dto.MemberDto;
 import com.example.LMS.admin.model.MemberParam;
+import com.example.LMS.course.controller.BaseController;
 import com.example.LMS.member.model.MemberInput;
 import com.example.LMS.util.PageUtil;
 import com.example.LMS.member.service.MemberService;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class AdminMemberController {
+public class AdminMemberController extends BaseController {
     private final MemberService memberService;
 
     // 회원 목록 조회 페이지로 이동하는 메소드
@@ -33,9 +34,9 @@ public class AdminMemberController {
         String queryString = parameter.getQueryString();
 
         // 페이징 처리를 위한 PageUtil 객체 생성 및 초기화
-        PageUtil pageUtil = new PageUtil(totalCount, parameter.getPageSize(), parameter.getPageIndex(), queryString);
+        String pagerHtml = getPaperHtml(totalCount, parameter.getPageSize(), parameter.getPageIndex(), queryString);
         // 생성된 페이징 HTML 코드를 "pager"라는 이름으로 모델에 추가하여 뷰로 전달
-        model.addAttribute("pager", pageUtil.pager());
+        model.addAttribute("pager", pagerHtml);
         model.addAttribute("list", members);
         model.addAttribute("totalCount", totalCount);
 
