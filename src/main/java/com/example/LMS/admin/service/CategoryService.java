@@ -1,5 +1,10 @@
 package com.example.LMS.admin.service;
 
+import com.example.LMS.admin.dto.CategoryDto;
+import com.example.LMS.admin.model.CategoryInput;
+
+import java.util.List;
+
 public interface CategoryService {
 
     List<CategoryDto> list();
@@ -18,12 +23,6 @@ public interface CategoryService {
      * 카테고리 삭제
      */
     boolean del(long id);
-
-
-    /**
-     * 프론트 카테고리 정보
-     */
-    List<CategoryDto> frontList(CategoryDto parameter);
 
 
 }
