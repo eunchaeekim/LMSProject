@@ -2,6 +2,7 @@ package com.example.LMS.admin.service;
 
 import com.example.LMS.admin.dto.CategoryDto;
 import com.example.LMS.admin.entity.Category;
+import com.example.LMS.admin.mapper.CategoryMapper;
 import com.example.LMS.admin.model.CategoryInput;
 import com.example.LMS.admin.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     private Sort getSortBySortValueDesc() {
         return Sort.by(Sort.Direction.DESC, "sortValue");
@@ -92,5 +94,10 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.save(category);
         }
         return true;
+    }
+
+    @Override
+    public List<CategoryDto> frontList(CategoryDto parameter) {
+        return categoryMapper.select(parameter);
     }
 }
