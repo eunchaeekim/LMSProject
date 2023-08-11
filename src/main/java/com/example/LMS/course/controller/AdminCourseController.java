@@ -40,7 +40,7 @@ public class AdminCourseController extends BaseController {
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pager", pagerHtml);
 
-        return "admin/course/list";
+        return "admin/ecourse/list";
     }
 
     @GetMapping(value = {"/admin/course/add.do", "/admin/course/edit.do"})
